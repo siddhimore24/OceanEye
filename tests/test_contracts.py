@@ -46,3 +46,52 @@ def test_ais_output_required_fields():
 
     for field in required_fields:
         assert field in ais_output
+
+
+def test_drift_output_required_fields():
+    drift_output = {
+        "spill_id": "CASE_001",
+        "geometry": {},
+        "release_time_window": {
+            "start": "2026-09-07T08:00:00",
+            "end": "2026-09-07T10:00:00",
+        },
+        "uncertainty": {},
+    }
+
+    required_fields = [
+        "spill_id",
+        "geometry",
+        "release_time_window",
+        "uncertainty",
+    ]
+
+    for field in required_fields:
+        assert field in drift_output
+
+
+def test_ranking_output_required_fields():
+    ranking_output = {
+        "mmsi": "123456789",
+        "rank": 1,
+        "overall_score": 0.85,
+        "score_components": {},
+        "reasons": [],
+        "confidence": 0.85,
+        "uncertainty": {},
+        "data_provenance": {},
+    }
+
+    required_fields = [
+        "mmsi",
+        "rank",
+        "overall_score",
+        "score_components",
+        "reasons",
+        "confidence",
+        "uncertainty",
+        "data_provenance",
+    ]
+
+    for field in required_fields:
+        assert field in ranking_output
