@@ -18,3 +18,16 @@ def test_pipeline_has_case_id():
 
     assert "case_id" in result
     assert result["case_id"] == "CASE_001"
+
+def test_pipeline_returns_success_for_valid_data():
+    result = run_pipeline()
+
+    assert result["status"] == "success"
+    assert result["case_id"] == "CASE_001"
+
+
+def test_pipeline_has_message():
+    result = run_pipeline()
+
+    assert "message" in result
+    assert result["message"] == "Pipeline integration is working"
