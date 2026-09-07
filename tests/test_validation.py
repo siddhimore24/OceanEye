@@ -49,3 +49,18 @@ def test_invalid_coordinates():
 def test_non_negative_value():
     assert validate_non_negative(5.2)
     assert not validate_non_negative(-1)
+
+def test_invalid_confidence_negative():
+    assert not validate_confidence(-0.5)
+
+
+def test_invalid_latitude():
+    assert not validate_latitude(95)
+
+
+def test_invalid_longitude():
+    assert not validate_longitude(-200)
+
+
+def test_invalid_non_negative_value():
+    assert not validate_non_negative(-10)
