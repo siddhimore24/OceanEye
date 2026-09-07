@@ -1,0 +1,6 @@
+{
+  "name": "Marine Oil Spill Intelligence System",
+  "description": "Satellite-powered detection, drift analysis, AIS tracking and vessel attribution for maritime disaster response.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
