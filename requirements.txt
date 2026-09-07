@@ -1,0 +1,10 @@
+numpy
+pandas
+geopandas
+shapely
+pyproj
+rasterio
+opencv-python
+streamlit
+folium
+plotly
