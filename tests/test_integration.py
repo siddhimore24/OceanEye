@@ -67,3 +67,37 @@ def test_pipeline_rejects_missing_field():
     result = run_pipeline(data)
 
     assert result["status"] == "error"
+
+
+def test_pipeline_rejects_negative_area():
+    data = {
+        "spill_id": "CASE_001",
+        "area_km2": -1.0,
+        "centroid": {
+            "longitude": 72.8,
+            "latitude": 18.5,
+        },
+        "confidence": 0.85,
+        "output_path": "data/sample/spill.geojson",
+    }
+
+    result = run_pipeline(data)
+
+    assert result["status"] == "error"
+
+
+def test_pipeline_rejects_missing_output_file():
+    data = {
+        "spill_id": "CASE_001",
+        "area_km2": 1.0,
+        "centroid": {
+            "longitude": 72.8,
+            "latitude": 18.5,
+        },
+        "confidence": 0.85,
+        "output_path": "data/sample/nonexistent.geojson",
+    }
+
+    result = run_pipeline(data)
+
+    assert result["status"] == "error"
