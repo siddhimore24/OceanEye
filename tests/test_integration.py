@@ -35,7 +35,7 @@ def test_pipeline_has_message():
     result = run_pipeline()
 
     assert result["message"] == (
-        "Satellite output successfully validated"
+        "Satellite pipeline completed successfully"
     )
 
 

@@ -55,23 +55,29 @@ def validate_satellite_output(data):
     return True, None
 
 
-def run_pipeline(satellite_result=None):
+def run_pipeline(
+    input_path="data/sample/CASE_001.tif",
+    output_path="data/sample/spill.geojson",
+    spill_id=DEMO_CASE,
+):
     """
-    M6 integration entry point.
-
-    Validates the output received from the satellite module.
+    Run the real satellite pipeline and validate its output.
     """
 
-    if satellite_result is None:
-        satellite_result = {
-            "spill_id": DEMO_CASE,
-            "area_km2": 1.0,
-            "centroid": {
-                "longitude": 72.8,
-                "latitude": 18.5,
-            },
-            "confidence": 0.85,
-            "output_path": "data/sample/spill.geojson",
+    from satellite.pipeline import run_satellite_pipeline
+
+    try:
+        satellite_result = run_satellite_pipeline(
+            input_path=input_path,
+            output_path=output_path,
+            spill_id=spill_id,
+        )
+
+    except Exception as exc:
+        return {
+            "status": PIPELINE_STATUS_ERROR,
+            "stage": "satellite",
+            "error": str(exc),
         }
 
     valid, error = validate_satellite_output(
@@ -87,6 +93,6 @@ def run_pipeline(satellite_result=None):
     return {
         "status": PIPELINE_STATUS_SUCCESS,
         "case_id": satellite_result["spill_id"],
-        "message": "Satellite output successfully validated",
+        "message": "Satellite pipeline completed successfully",
         "satellite_output": satellite_result,
     }
