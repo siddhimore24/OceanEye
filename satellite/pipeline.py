@@ -2,17 +2,9 @@ from datetime import datetime, timezone
 
 import geopandas as gpd
 
-from satellite.preprocessing.preprocess import (
-    preprocess_sar
-)
-
-from satellite.detection.detect import (
-    detect_oil_like_regions
-)
-
-from satellite.geometry.geometry import (
-    extract_spill_geometry
-)
+from satellite.preprocessing.preprocess import preprocess_sar
+from satellite.detection.detect import detect_oil_like_regions
+from satellite.geometry.geometry import extract_spill_geometry
 
 
 def calculate_detection_confidence(
@@ -25,9 +17,8 @@ def calculate_detection_confidence(
 
     IMPORTANT:
     This is NOT the probability that the region is oil.
-
-    It is only a score representing how strongly the
-    detected region matches the simple MVP detector.
+    It only represents how strongly the detected region
+    matches the simple MVP detector.
     """
 
     candidate_pixels = image[mask > 0]
@@ -35,10 +26,8 @@ def calculate_detection_confidence(
     if len(candidate_pixels) == 0:
         return 0.0
 
-    # Average intensity of detected candidate
     candidate_mean = candidate_pixels.mean()
 
-    # Lower intensity = darker candidate
     darkness_score = 1.0 - (
         candidate_mean / 255.0
     )
@@ -73,7 +62,12 @@ def create_spill_geojson(
             "No spill geometry was detected."
         )
 
-    # GeoJSON geometry should preferably be WGS84
+    if centroid is None:
+        raise ValueError(
+            "Spill centroid could not be calculated."
+        )
+
+    # Convert geometry to WGS84 for GeoJSON output.
     gdf = gpd.GeoDataFrame(
         [
             {
@@ -81,17 +75,14 @@ def create_spill_geojson(
                 "area_km2": area_km2,
                 "confidence": confidence,
                 "detection_timestamp": detection_timestamp,
-                "centroid_lon": centroid["longitude"],
-                "centroid_lat": centroid["latitude"],
+                "centroid": centroid,
             }
         ],
         geometry=[geometry],
         crs=source_crs
     )
 
-    gdf = gdf.to_crs(
-        "EPSG:4326"
-    )
+    gdf = gdf.to_crs("EPSG:4326")
 
     gdf.to_file(
         output_path,
@@ -107,49 +98,34 @@ def run_satellite_pipeline(
     """
     Run the complete Member-2 satellite pipeline.
 
-    Pipeline:
-
-        Sentinel-1 image
-              ↓
-        Preprocessing
-              ↓
-        Oil-like detection
-              ↓
-        Spill geometry
-              ↓
-        Confidence
-              ↓
-        spill.geojson
+    Sentinel-1 image
+        ↓
+    Preprocessing
+        ↓
+    Oil-like detection
+        ↓
+    Spill geometry
+        ↓
+    Confidence
+        ↓
+    spill.geojson
     """
 
     print("Starting satellite pipeline...")
 
-    # --------------------------------------------------
-    # 1. PREPROCESSING
-    # --------------------------------------------------
-
-    image, transform, crs, metadata = (
-        preprocess_sar(input_path)
+    # 1. Preprocessing
+    image, transform, crs, metadata = preprocess_sar(
+        input_path
     )
 
     print("✓ Preprocessing completed")
 
-
-    # --------------------------------------------------
-    # 2. DETECTION
-    # --------------------------------------------------
-
-    mask = detect_oil_like_regions(
-        image
-    )
+    # 2. Detection
+    mask = detect_oil_like_regions(image)
 
     print("✓ Oil-like candidate detection completed")
 
-
-    # --------------------------------------------------
-    # 3. GEOMETRY
-    # --------------------------------------------------
-
+    # 3. Geometry
     geometry_result = extract_spill_geometry(
         mask,
         transform,
@@ -163,11 +139,7 @@ def run_satellite_pipeline(
 
     print("✓ Spill geometry generated")
 
-
-    # --------------------------------------------------
-    # 4. CONFIDENCE
-    # --------------------------------------------------
-
+    # 4. Confidence
     confidence = calculate_detection_confidence(
         image,
         mask
@@ -177,27 +149,17 @@ def run_satellite_pipeline(
         f"✓ Detection confidence: {confidence:.3f}"
     )
 
-
-    # --------------------------------------------------
-    # 5. TIMESTAMP
-    # --------------------------------------------------
-
-    detection_timestamp = (
-        metadata.get("TIFFTAG_DATETIME")
+    # 5. Timestamp
+    detection_timestamp = metadata.get(
+        "TIFFTAG_DATETIME"
     )
 
     if detection_timestamp is None:
-
         detection_timestamp = (
-            datetime.now(timezone.utc)
-            .isoformat()
+            datetime.now(timezone.utc).isoformat()
         )
 
-
-    # --------------------------------------------------
-    # 6. CREATE GeoJSON
-    # --------------------------------------------------
-
+    # 6. Create GeoJSON
     create_spill_geojson(
         geometry_result=geometry_result,
         confidence=confidence,
@@ -209,15 +171,11 @@ def run_satellite_pipeline(
 
     print("✓ spill.geojson created")
 
-
-    # --------------------------------------------------
-    # 7. RETURN SUMMARY
-    # --------------------------------------------------
-
+    # 7. Return summary
     return {
         "spill_id": spill_id,
         "area_km2": geometry_result["area_km2"],
         "centroid": geometry_result["centroid"],
         "confidence": confidence,
-        "output_path": output_path
+        "output_path": output_path,
     }
