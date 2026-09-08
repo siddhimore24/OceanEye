@@ -1,4 +1,4 @@
-from tests.validation import validate_required_fields
+from integration.validation import validate_required_fields
 
 
 def validate_drift_output(data):

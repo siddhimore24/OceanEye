@@ -1,4 +1,4 @@
-from tests.validation import (
+from integration.validation import (
     validate_latitude,
     validate_longitude,
     validate_non_negative,

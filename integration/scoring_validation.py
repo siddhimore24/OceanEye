@@ -1,6 +1,5 @@
-    from tests.validation import (
+from integration.validation import (
     validate_confidence,
-    validate_non_negative,
     validate_required_fields,
 )
 
@@ -36,17 +35,13 @@ def validate_ranking_candidate(candidate):
             "message": "Invalid rank",
         }
 
-    if not validate_confidence(
-        candidate["overall_score"]
-    ):
+    if not validate_confidence(candidate["overall_score"]):
         return False, {
             "stage": "scoring",
             "message": "Invalid overall score",
         }
 
-    if not validate_confidence(
-        candidate["confidence"]
-    ):
+    if not validate_confidence(candidate["confidence"]):
         return False, {
             "stage": "scoring",
             "message": "Invalid confidence",

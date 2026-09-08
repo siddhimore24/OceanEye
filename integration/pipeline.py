@@ -6,7 +6,7 @@ from config.settings import (
     PIPELINE_STATUS_ERROR,
 )
 
-from tests.validation import (
+from integration.validation import (
     validate_required_fields,
     validate_confidence,
 )
