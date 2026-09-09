@@ -1,5 +1,17 @@
+# Python
 .venv/
 __pycache__/
 *.pyc
-.env
 .pytest_cache/
+
+# Environment variables
+.env
+
+# Node
+node_modules/
+dist/
+
+# Frontend environment
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
