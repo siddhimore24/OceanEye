@@ -44,3 +44,7 @@ Do not silently rename fields or change formats.
 If a contract must change, update this document and notify
 the integration owner first.
 
+
+Also required: distance_score (0-1 normalized), temporal_score (0-1),
+trajectory_score (0-1) — these are what scoring/scoring.py actually reads.
+distance_to_source remains as the raw distance in km for display.

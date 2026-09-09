@@ -2,7 +2,6 @@
 .venv/
 __pycache__/
 *.pyc
-.pytest_cache/
 
 # Environment variables
 .env
@@ -15,3 +14,7 @@ dist/
 frontend/.env
 frontend/.env.*
 !frontend/.env.example
+
+ais_cleaned_positions.csv
+initialCSV.csv
+*.tif
