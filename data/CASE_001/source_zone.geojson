@@ -5,23 +5,6 @@
     "case_id": "CASE_001",
     "spill_latitude": 25.0,
     "spill_longitude": -85.0,
-    "release_time_window": {
-      "start": null,
-      "end": null,
-      "status": "unavailable_from_current_case",
-      "reason": "The current-field dataset contains numerical time indices rather than absolute timestamps.",
-      "current_start_time_index": 2
-    },
-    "uncertainty": {
-      "position_uncertainty_deg": 0.01,
-      "windage_range": [
-        0.02,
-        0.04
-      ],
-      "num_particles": 100,
-      "probability_calibration": "not_calibrated",
-      "interpretation": "Relative ensemble uncertainty; not a calibrated probability."
-    },
     "num_particles": 100,
     "position_uncertainty_deg": 0.01,
     "windage_min": 0.02,
@@ -35,6 +18,25 @@
     "zone_type": "relative_high_density_source_zone",
     "probability_calibration": "not_calibrated",
     "description": "Relative high-density source zone derived from a backward drift ensemble. This zone represents possible source locations and is not an exact source point or a calibrated probability.",
+    "release_time_window": {
+      "start": null,
+      "end": null,
+      "status": "not_established",
+      "current_time_reference": {
+        "type": "dataset_index",
+        "start_time_index": 2
+      },
+      "reason": "The current-field dataset does not contain absolute timestamp metadata, so an absolute release-time window cannot be established from this case."
+    },
+    "uncertainty": {
+      "position_uncertainty_deg": 0.01,
+      "windage_range": [
+        0.02,
+        0.04
+      ],
+      "num_particles": 100,
+      "probability_calibration": "not_calibrated"
+    },
     "temporal_alignment": "representative_case_alignment",
     "current_time_type": "dataset_index",
     "note": "Current dataset contains numerical time indices rather than absolute timestamps. Wind forcing uses the downloaded ERA5 timestamps. An absolute release-time window is therefore not established for this representative case."

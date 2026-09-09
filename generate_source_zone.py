@@ -24,11 +24,6 @@ OUTPUT_FILE = (
     "data/CASE_001/source_zone.geojson"
 )
 
-
-# ---------------------------------------------------------
-# CASE CONFIGURATION
-# ---------------------------------------------------------
-
 CASE_ID = "CASE_001"
 SPILL_ID = "CASE_001"
 
@@ -43,17 +38,13 @@ WINDAGE_MAX = 0.04
 
 STEPS = 2
 DT_SECONDS = 3600.0
-
 START_TIME_INDEX = 2
+
 RANDOM_SEED = 42
 
 GRID_SIZE = 20
 THRESHOLD = 0.5
 
-
-# ---------------------------------------------------------
-# MAIN
-# ---------------------------------------------------------
 
 def main():
 
@@ -61,9 +52,9 @@ def main():
     print("SEATRACE - SOURCE ZONE GENERATION")
     print("=" * 60)
 
-    # -----------------------------------------------------
-    # LOAD METOCEAN DATA
-    # -----------------------------------------------------
+    # --------------------------------------------------------
+    # Load metocean datasets
+    # --------------------------------------------------------
 
     print("\nLoading metocean datasets...")
 
@@ -73,9 +64,9 @@ def main():
     print("Current dataset loaded.")
     print("Wind dataset loaded.")
 
-    # -----------------------------------------------------
-    # BACKWARD DRIFT ENSEMBLE
-    # -----------------------------------------------------
+    # --------------------------------------------------------
+    # Generate backward particle ensemble
+    # --------------------------------------------------------
 
     print("\nGenerating backward drift ensemble...")
 
@@ -99,9 +90,9 @@ def main():
         "backward source positions."
     )
 
-    # -----------------------------------------------------
-    # SOURCE DENSITY
-    # -----------------------------------------------------
+    # --------------------------------------------------------
+    # Calculate source density
+    # --------------------------------------------------------
 
     print("\nCalculating source density...")
 
@@ -117,9 +108,9 @@ def main():
         density_result["density"].sum(),
     )
 
-    # -----------------------------------------------------
-    # SOURCE ZONE
-    # -----------------------------------------------------
+    # --------------------------------------------------------
+    # Create source zone
+    # --------------------------------------------------------
 
     print("\nCreating high-density source zone...")
 
@@ -140,9 +131,9 @@ def main():
         polygon.area,
     )
 
-    # -----------------------------------------------------
-    # GEOJSON GEOMETRY
-    # -----------------------------------------------------
+    # --------------------------------------------------------
+    # Convert to GeoJSON geometry
+    # --------------------------------------------------------
 
     print("\nConverting source zone to GeoJSON...")
 
@@ -150,34 +141,9 @@ def main():
         polygon
     )
 
-    # -----------------------------------------------------
-    # RELEASE-TIME WINDOW
-    # -----------------------------------------------------
-    #
-    # The current dataset uses numerical time indices and
-    # does not contain absolute timestamps.
-    #
-    # Therefore we DO NOT invent an actual release timestamp.
-    #
-    # AIS integration can use this field later when the
-    # upstream spill-detection module provides an absolute
-    # detection timestamp.
-    # -----------------------------------------------------
-
-    release_time_window = {
-        "start": None,
-        "end": None,
-        "status": "unavailable_from_current_case",
-        "reason": (
-            "The current-field dataset contains numerical "
-            "time indices rather than absolute timestamps."
-        ),
-        "current_start_time_index": START_TIME_INDEX,
-    }
-
-    # -----------------------------------------------------
-    # UNCERTAINTY
-    # -----------------------------------------------------
+    # --------------------------------------------------------
+    # Drift → AIS contract metadata
+    # --------------------------------------------------------
 
     uncertainty = {
         "position_uncertainty_deg": (
@@ -188,51 +154,49 @@ def main():
             WINDAGE_MAX,
         ],
         "num_particles": NUM_PARTICLES,
-        "probability_calibration": "not_calibrated",
-        "interpretation": (
-            "Relative ensemble uncertainty; "
-            "not a calibrated probability."
+        "probability_calibration": (
+            "not_calibrated"
         ),
     }
 
-    # -----------------------------------------------------
-    # OUTPUT GEOJSON
-    # -----------------------------------------------------
+    release_time_window = {
+        "start": None,
+        "end": None,
+        "status": "not_established",
+        "current_time_reference": {
+            "type": "dataset_index",
+            "start_time_index": START_TIME_INDEX,
+        },
+        "reason": (
+            "The current-field dataset does not "
+            "contain absolute timestamp metadata, "
+            "so an absolute release-time window "
+            "cannot be established from this case."
+        ),
+    }
+
+    # --------------------------------------------------------
+    # Build final GeoJSON Feature
+    # --------------------------------------------------------
 
     geojson = {
         "type": "Feature",
 
         "properties": {
 
-            # Shared identifier
+            # Contract identifier
             "spill_id": SPILL_ID,
 
-            # Case information
+            # Existing case identifier
             "case_id": CASE_ID,
 
-            # Observed spill position used for this
+            # Observed spill location used by this
             # representative validation case
             "spill_latitude": START_LATITUDE,
             "spill_longitude": START_LONGITUDE,
 
-            # -------------------------------------------------
-            # RELEASE TIME
-            # -------------------------------------------------
-
-            "release_time_window": release_time_window,
-
-            # -------------------------------------------------
-            # UNCERTAINTY
-            # -------------------------------------------------
-
-            "uncertainty": uncertainty,
-
-            # -------------------------------------------------
-            # MODEL PARAMETERS
-            # -------------------------------------------------
-
+            # Ensemble configuration
             "num_particles": NUM_PARTICLES,
-
             "position_uncertainty_deg": (
                 POSITION_UNCERTAINTY_DEG
             ),
@@ -242,22 +206,16 @@ def main():
 
             "random_seed": RANDOM_SEED,
 
+            # Model configuration
             "backward_steps": STEPS,
-
-            "model_timestep_seconds": (
-                DT_SECONDS
-            ),
-
+            "model_timestep_seconds": DT_SECONDS,
             "start_time_index": START_TIME_INDEX,
 
+            # Density-grid configuration
             "grid_size": GRID_SIZE,
-
             "threshold": THRESHOLD,
 
-            # -------------------------------------------------
-            # INTERPRETATION
-            # -------------------------------------------------
-
+            # Source-zone interpretation
             "zone_type": (
                 "relative_high_density_source_zone"
             ),
@@ -274,9 +232,19 @@ def main():
                 "or a calibrated probability."
             ),
 
-            # -------------------------------------------------
-            # TEMPORAL INFORMATION
-            # -------------------------------------------------
+            # ------------------------------------------------
+            # Drift → AIS contract fields
+            # ------------------------------------------------
+
+            "release_time_window": (
+                release_time_window
+            ),
+
+            "uncertainty": uncertainty,
+
+            # ------------------------------------------------
+            # Temporal provenance
+            # ------------------------------------------------
 
             "temporal_alignment": (
                 "representative_case_alignment"
@@ -285,10 +253,6 @@ def main():
             "current_time_type": (
                 "dataset_index"
             ),
-
-            # -------------------------------------------------
-            # DATA LIMITATION
-            # -------------------------------------------------
 
             "note": (
                 "Current dataset contains numerical "
@@ -303,9 +267,9 @@ def main():
         "geometry": geometry,
     }
 
-    # -----------------------------------------------------
-    # SAVE OUTPUT
-    # -----------------------------------------------------
+    # --------------------------------------------------------
+    # Save output
+    # --------------------------------------------------------
 
     print("\nSaving GeoJSON...")
 
@@ -321,9 +285,9 @@ def main():
             indent=2,
         )
 
-    # -----------------------------------------------------
-    # CLOSE DATASETS
-    # -----------------------------------------------------
+    # --------------------------------------------------------
+    # Close datasets
+    # --------------------------------------------------------
 
     current_field.close()
     wind_field.close()
