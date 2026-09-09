@@ -14,3 +14,7 @@ dist/
 frontend/.env
 frontend/.env.*
 !frontend/.env.example
+
+ais_cleaned_positions.csv
+initialCSV.csv
+*.tif
