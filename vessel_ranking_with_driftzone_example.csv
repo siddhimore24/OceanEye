@@ -1,0 +1,135 @@
+mmsi,shipname,ship_type,score,min_dist_km,loiter_minutes,had_gap_near_spill,in_drift_zone,evidence
+230036540,DEEPEXPLORER,34.0,0.8589,6.544,623.5,True,True,6.5 km from spill at closest approach; 624 min loitering (<3kt) nearby; AIS signal gap ending near spill time; track intersects drift/source zone
+276005280,AHTO-14,0.0,0.7562,0.625,689.8,False,True,0.6 km from spill at closest approach; 690 min loitering (<3kt) nearby; track intersects drift/source zone
+276813000,VIKING XPRS,0.0,0.744,1.448,686.6,False,True,1.4 km from spill at closest approach; 687 min loitering (<3kt) nearby; track intersects drift/source zone
+276415000,EVA-316,0.0,0.7426,1.552,686.9,False,True,1.6 km from spill at closest approach; 687 min loitering (<3kt) nearby; track intersects drift/source zone
+276645000,AHTO-24,0.0,0.7289,2.574,689.8,False,True,2.6 km from spill at closest approach; 690 min loitering (<3kt) nearby; track intersects drift/source zone
+276702000,AHTO-26,0.0,0.7282,2.628,689.8,False,True,2.6 km from spill at closest approach; 690 min loitering (<3kt) nearby; track intersects drift/source zone
+276829000,MEGASTAR,0.0,0.728,1.502,616.5,False,True,1.5 km from spill at closest approach; 616 min loitering (<3kt) nearby; track intersects drift/source zone
+276853000,RANDI,0.0,0.7279,0.91,577.9,False,True,0.9 km from spill at closest approach; 578 min loitering (<3kt) nearby; track intersects drift/source zone
+230628000,FINLANDIA,0.0,0.7181,1.09,544.3,False,True,1.1 km from spill at closest approach; 544 min loitering (<3kt) nearby; track intersects drift/source zone
+276785000,KOTKAS,0.0,0.6856,5.669,689.8,False,True,5.7 km from spill at closest approach; 690 min loitering (<3kt) nearby; track intersects drift/source zone
+538007812,JADE BLOSSOM,0.0,0.6832,5.797,687.0,False,True,5.8 km from spill at closest approach; 687 min loitering (<3kt) nearby; track intersects drift/source zone
+276636000,ARKTURUS,0.0,0.6827,5.879,689.9,False,True,5.9 km from spill at closest approach; 690 min loitering (<3kt) nearby; track intersects drift/source zone
+276798000,JAKOB PREI,0.0,0.6539,4.751,484.9,False,True,4.8 km from spill at closest approach; 485 min loitering (<3kt) nearby; track intersects drift/source zone
+538007673,SEVEN SEAS SPLENDOR,0.0,0.6525,4.975,492.7,False,True,5.0 km from spill at closest approach; 493 min loitering (<3kt) nearby; track intersects drift/source zone
+636021515,ABERLOUR,0.0,0.6491,8.173,683.1,False,True,8.2 km from spill at closest approach; 683 min loitering (<3kt) nearby; track intersects drift/source zone
+309175000,ICELANDICA HAV,0.0,0.6333,7.516,568.1,False,True,7.5 km from spill at closest approach; 568 min loitering (<3kt) nearby; track intersects drift/source zone
+276810000,WRANGO,0.0,0.6251,6.601,471.7,False,True,6.6 km from spill at closest approach; 472 min loitering (<3kt) nearby; track intersects drift/source zone
+276330000,AHTO-03,50.0,0.6241,2.564,689.8,False,True,2.6 km from spill at closest approach; 690 min loitering (<3kt) nearby; track intersects drift/source zone
+276672000,STAR,0.0,0.6072,1.386,53.3,False,True,1.4 km from spill at closest approach; 53 min loitering (<3kt) nearby; track intersects drift/source zone
+276779000,BALTIC QUEEN,0.0,0.5946,5.101,234.6,False,True,5.1 km from spill at closest approach; 235 min loitering (<3kt) nearby; track intersects drift/source zone
+276010590,KLAARA,37.0,0.5732,10.084,687.0,True,False,10.1 km from spill at closest approach; 687 min loitering (<3kt) nearby; AIS signal gap ending near spill time
+276010860,ANGEL ROSE VKB-122,37.0,0.5707,10.261,687.0,True,False,10.3 km from spill at closest approach; 687 min loitering (<3kt) nearby; AIS signal gap ending near spill time
+276007520,DEJA VU,36.0,0.5551,11.128,670.8,True,False,11.1 km from spill at closest approach; 671 min loitering (<3kt) nearby; AIS signal gap ending near spill time
+276012310,EHE,37.0,0.554,9.344,551.0,True,False,9.3 km from spill at closest approach; 551 min loitering (<3kt) nearby; AIS signal gap ending near spill time
+276012370,SILEGNA,37.0,0.5458,11.944,681.0,True,False,11.9 km from spill at closest approach; 681 min loitering (<3kt) nearby; AIS signal gap ending near spill time
+276866000,KRAFT,0.0,0.5435,12.16,684.0,True,False,12.2 km from spill at closest approach; 684 min loitering (<3kt) nearby; AIS signal gap ending near spill time
+276784000,AHTO-01,0.0,0.5427,12.122,678.0,True,False,12.1 km from spill at closest approach; 678 min loitering (<3kt) nearby; AIS signal gap ending near spill time
+636092297,JOHANN,0.0,0.5338,12.622,669.1,True,False,12.6 km from spill at closest approach; 669 min loitering (<3kt) nearby; AIS signal gap ending near spill time
+276832000,VEGA,0.0,0.5263,6.7,23.6,False,True,6.7 km from spill at closest approach; 24 min loitering (<3kt) nearby; track intersects drift/source zone
+276012100,SIRET,37.0,0.5215,13.729,684.0,True,False,13.7 km from spill at closest approach; 684 min loitering (<3kt) nearby; AIS signal gap ending near spill time
+276002220,M-41,0.0,0.4763,11.372,324.3,True,False,11.4 km from spill at closest approach; 324 min loitering (<3kt) nearby; AIS signal gap ending near spill time
+276538000,LOTOS,0.0,0.4283,6.192,689.8,False,False,6.2 km from spill at closest approach; 690 min loitering (<3kt) nearby
+276001840,SUNRAY,0.0,0.4215,6.678,689.8,False,False,6.7 km from spill at closest approach; 690 min loitering (<3kt) nearby
+276841000,HIIESAARE,0.0,0.421,6.711,689.8,False,False,6.7 km from spill at closest approach; 690 min loitering (<3kt) nearby
+269108230,NASHIRA,37.0,0.4162,12.863,143.9,True,False,12.9 km from spill at closest approach; 144 min loitering (<3kt) nearby; AIS signal gap ending near spill time
+314475000,WILSON MONSOON,70.0,0.3931,11.137,685.4,False,False,11.1 km from spill at closest approach; 685 min loitering (<3kt) nearby
+276260000,NAFTA,0.0,0.3763,9.905,689.8,False,False,9.9 km from spill at closest approach; 690 min loitering (<3kt) nearby
+276007420,KIRSTI,37.0,0.3751,9.945,687.0,False,False,9.9 km from spill at closest approach; 687 min loitering (<3kt) nearby
+276011470,AXOPAR VKB-544,37.0,0.3748,9.967,687.0,False,False,10.0 km from spill at closest approach; 687 min loitering (<3kt) nearby
+375354000,SCANLARK,0.0,0.3745,9.994,687.0,False,False,10.0 km from spill at closest approach; 687 min loitering (<3kt) nearby
+276714000,S/Y ELINA,36.0,0.373,10.101,687.0,False,False,10.1 km from spill at closest approach; 687 min loitering (<3kt) nearby
+276010780,AXOPAR (ANDRESA),37.0,0.373,10.095,687.0,False,False,10.1 km from spill at closest approach; 687 min loitering (<3kt) nearby
+304047000,KESSU,0.0,0.3726,10.136,687.6,False,False,10.1 km from spill at closest approach; 688 min loitering (<3kt) nearby
+276756000,AHTO-28,0.0,0.3725,10.109,685.2,False,False,10.1 km from spill at closest approach; 685 min loitering (<3kt) nearby
+276010380,JAZZ EST935,37.0,0.3706,10.312,689.9,False,False,10.3 km from spill at closest approach; 690 min loitering (<3kt) nearby
+276007380,QUEEN ANN,36.0,0.3706,10.266,687.0,False,False,10.3 km from spill at closest approach; 687 min loitering (<3kt) nearby
+276005470,CASSANDRA,37.0,0.3705,10.279,687.0,False,False,10.3 km from spill at closest approach; 687 min loitering (<3kt) nearby
+256341000,KADRI,0.0,0.3705,10.244,684.9,False,False,10.2 km from spill at closest approach; 685 min loitering (<3kt) nearby
+276010310,M-80,0.0,0.3699,10.317,687.0,False,False,10.3 km from spill at closest approach; 687 min loitering (<3kt) nearby
+276611000,CENTAUR,36.0,0.3696,10.245,681.0,False,False,10.2 km from spill at closest approach; 681 min loitering (<3kt) nearby
+276158000,TARMO,90.0,0.3695,10.347,687.0,False,False,10.3 km from spill at closest approach; 687 min loitering (<3kt) nearby
+276432000,EVA-318,0.0,0.3695,10.392,689.8,False,False,10.4 km from spill at closest approach; 690 min loitering (<3kt) nearby
+276781000,SEKTORI,0.0,0.3691,10.372,686.5,False,False,10.4 km from spill at closest approach; 686 min loitering (<3kt) nearby
+314220000,WILSON DVINA,0.0,0.3688,10.4,687.0,False,False,10.4 km from spill at closest approach; 687 min loitering (<3kt) nearby
+276003870,VESILEENU EST157,36.0,0.3687,10.358,684.0,False,False,10.4 km from spill at closest approach; 684 min loitering (<3kt) nearby
+210046000,RIX LAGOON,0.0,0.3684,10.424,687.0,False,False,10.4 km from spill at closest approach; 687 min loitering (<3kt) nearby
+276010520,AMILDE,36.0,0.3684,10.334,681.0,False,False,10.3 km from spill at closest approach; 681 min loitering (<3kt) nearby
+276826000,AGOT,0.0,0.3682,10.412,685.0,False,False,10.4 km from spill at closest approach; 685 min loitering (<3kt) nearby
+276629000,MONTU,0.0,0.3679,10.433,685.0,False,False,10.4 km from spill at closest approach; 685 min loitering (<3kt) nearby
+257538000,WILSON PALDISKI,0.0,0.3679,10.466,687.1,False,False,10.5 km from spill at closest approach; 687 min loitering (<3kt) nearby
+276835000,TORVIK,0.0,0.3666,10.599,689.8,False,False,10.6 km from spill at closest approach; 690 min loitering (<3kt) nearby
+276012530,HAKUNA MATATA,36.0,0.3652,10.654,687.0,False,False,10.7 km from spill at closest approach; 687 min loitering (<3kt) nearby
+212179000,SWE-TRADER,0.0,0.3651,17.847,0.0,False,True,17.8 km from spill at closest approach; track intersects drift/source zone
+276008650,KLARINA,37.0,0.3648,10.543,678.0,False,False,10.5 km from spill at closest approach; 678 min loitering (<3kt) nearby
+276012650,ASTRID,37.0,0.3647,10.647,684.0,False,False,10.6 km from spill at closest approach; 684 min loitering (<3kt) nearby
+257084390,FAMITA,0.0,0.3647,10.642,683.9,False,False,10.6 km from spill at closest approach; 684 min loitering (<3kt) nearby
+314396000,WILSON FLUSHING,0.0,0.3645,10.702,687.0,False,False,10.7 km from spill at closest approach; 687 min loitering (<3kt) nearby
+276010760,VKA-136,37.0,0.3639,10.712,684.9,False,False,10.7 km from spill at closest approach; 685 min loitering (<3kt) nearby
+209968000,RIX STREAM,0.0,0.3639,10.749,687.0,False,False,10.7 km from spill at closest approach; 687 min loitering (<3kt) nearby
+276009510,VENUS SL,60.0,0.3636,10.768,687.0,False,False,10.8 km from spill at closest approach; 687 min loitering (<3kt) nearby
+276011120,SLEEPER,36.0,0.3635,10.773,687.0,False,False,10.8 km from spill at closest approach; 687 min loitering (<3kt) nearby
+276010630,AXOPAR T,37.0,0.3631,10.756,684.0,False,False,10.8 km from spill at closest approach; 684 min loitering (<3kt) nearby
+276008340,PANTU,0.0,0.3627,10.836,687.0,False,False,10.8 km from spill at closest approach; 687 min loitering (<3kt) nearby
+305198000,DOLFIJN,0.0,0.3627,10.835,687.1,False,False,10.8 km from spill at closest approach; 687 min loitering (<3kt) nearby
+276010300,STELLA MARIS AMA-967,37.0,0.3623,10.771,681.0,False,False,10.8 km from spill at closest approach; 681 min loitering (<3kt) nearby
+276329000,SALME,0.0,0.3621,10.646,672.0,False,False,10.6 km from spill at closest approach; 672 min loitering (<3kt) nearby
+276005880,ELIZA,36.0,0.362,10.887,687.2,False,False,10.9 km from spill at closest approach; 687 min loitering (<3kt) nearby
+276001930,NORDEA,36.0,0.3619,10.887,686.9,False,False,10.9 km from spill at closest approach; 687 min loitering (<3kt) nearby
+238247140,COOL CAT,37.0,0.3617,10.768,678.0,False,False,10.8 km from spill at closest approach; 678 min loitering (<3kt) nearby
+276844000,TEBRA,56.0,0.3608,10.968,686.9,False,False,11.0 km from spill at closest approach; 687 min loitering (<3kt) nearby
+276012340,HOPPER,36.0,0.3606,10.798,675.0,False,False,10.8 km from spill at closest approach; 675 min loitering (<3kt) nearby
+246724000,JADE,0.0,0.3603,18.19,0.0,False,True,18.2 km from spill at closest approach; track intersects drift/source zone
+247114900,AIDAVITA,0.0,0.3596,11.055,687.0,False,False,11.1 km from spill at closest approach; 687 min loitering (<3kt) nearby
+230673000,PRIMA QUEEN,0.0,0.3595,11.065,687.0,False,False,11.1 km from spill at closest approach; 687 min loitering (<3kt) nearby
+312771000,SIGHVATUR BJARNASON,0.0,0.3568,11.26,687.5,False,False,11.3 km from spill at closest approach; 688 min loitering (<3kt) nearby
+314206000,WILSON GARSTON,0.0,0.3564,11.283,687.0,False,False,11.3 km from spill at closest approach; 687 min loitering (<3kt) nearby
+212376000,MARTEN,0.0,0.3555,18.539,0.0,False,True,18.5 km from spill at closest approach; track intersects drift/source zone
+276864000,VEGTIND,0.0,0.3546,11.366,684.0,False,False,11.4 km from spill at closest approach; 684 min loitering (<3kt) nearby
+636020457,TRANSAMERICA,0.0,0.3542,11.444,687.0,False,False,11.4 km from spill at closest approach; 687 min loitering (<3kt) nearby
+276807000,SILJA EUROPA,0.0,0.3512,11.655,687.0,False,False,11.7 km from spill at closest approach; 687 min loitering (<3kt) nearby
+275430000,ISABELLE,0.0,0.35,11.744,687.0,False,False,11.7 km from spill at closest approach; 687 min loitering (<3kt) nearby
+276787000,VIRU,0.0,0.3498,11.802,689.8,False,False,11.8 km from spill at closest approach; 690 min loitering (<3kt) nearby
+276003580,AHTO- 07,0.0,0.3488,11.868,689.8,False,False,11.9 km from spill at closest approach; 690 min loitering (<3kt) nearby
+276816000,PROTECTOR,0.0,0.342,12.312,687.0,False,False,12.3 km from spill at closest approach; 687 min loitering (<3kt) nearby
+230989380,TRITON,0.0,0.3408,12.134,669.9,False,False,12.1 km from spill at closest approach; 670 min loitering (<3kt) nearby
+276861000,HELIOS,0.0,0.3394,12.255,671.2,False,False,12.3 km from spill at closest approach; 671 min loitering (<3kt) nearby
+245147000,FRISIAN SUMMER,0.0,0.3377,12.6,685.9,False,False,12.6 km from spill at closest approach; 686 min loitering (<3kt) nearby
+275437000,FLAGMAN 1,80.0,0.3363,11.215,429.0,False,False,11.2 km from spill at closest approach; 429 min loitering (<3kt) nearby
+276012550,GURGI,36.0,0.324,13.596,687.0,False,False,13.6 km from spill at closest approach; 687 min loitering (<3kt) nearby
+211198140,SARAH-MEE 3,36.0,0.3238,13.617,687.1,False,False,13.6 km from spill at closest approach; 687 min loitering (<3kt) nearby
+276002350,ELIZABETH,37.0,0.3235,13.637,687.0,False,False,13.6 km from spill at closest approach; 687 min loitering (<3kt) nearby
+276010830,ETTA,37.0,0.3234,13.64,687.0,False,False,13.6 km from spill at closest approach; 687 min loitering (<3kt) nearby
+276010840,HIPPOCAMP,37.0,0.3229,13.679,687.0,False,False,13.7 km from spill at closest approach; 687 min loitering (<3kt) nearby
+276011810,SANNE-MARIE,37.0,0.3226,13.695,687.0,False,False,13.7 km from spill at closest approach; 687 min loitering (<3kt) nearby
+276007600,EST-557 SIIRIUS,37.0,0.3225,13.704,687.0,False,False,13.7 km from spill at closest approach; 687 min loitering (<3kt) nearby
+276011780,MARLEEN,37.0,0.3221,13.731,686.9,False,False,13.7 km from spill at closest approach; 687 min loitering (<3kt) nearby
+275494000,RISTNA,0.0,0.3214,13.756,685.4,False,False,13.8 km from spill at closest approach; 685 min loitering (<3kt) nearby
+276006890,MARIANNE,37.0,0.3181,13.695,666.0,False,False,13.7 km from spill at closest approach; 666 min loitering (<3kt) nearby
+230665000,SILVERFORS,30.0,0.3143,6.819,686.5,False,False,6.8 km from spill at closest approach; 686 min loitering (<3kt) nearby
+276643000,ROSSVIK,0.0,0.3063,11.873,494.6,False,False,11.9 km from spill at closest approach; 495 min loitering (<3kt) nearby
+276809000,ATLAS,0.0,0.2801,12.139,391.3,False,False,12.1 km from spill at closest approach; 391 min loitering (<3kt) nearby
+276837000,AGAR,52.0,0.2523,11.255,687.8,False,False,11.3 km from spill at closest approach; 688 min loitering (<3kt) nearby
+636022144,KMAX VISION,0.0,0.2434,22.971,0.0,True,False,23.0 km from spill at closest approach; AIS signal gap ending near spill time
+276010040,SAR TALLINN,37.0,0.2354,13.337,262.8,False,False,13.3 km from spill at closest approach; 263 min loitering (<3kt) nearby
+636021850,LADYBUG,0.0,0.2298,14.784,330.3,False,False,14.8 km from spill at closest approach; 330 min loitering (<3kt) nearby
+230685000,FINBO CARGO,0.0,0.229,10.483,49.6,False,False,10.5 km from spill at closest approach; 50 min loitering (<3kt) nearby
+230042750,AQUARIUS,36.0,0.1159,17.791,0.0,False,False,17.8 km from spill at closest approach
+246412000,CROWN MARY,0.0,0.0988,19.016,0.0,False,False,19.0 km from spill at closest approach
+258681000,BIMI,0.0,0.0936,19.388,0.0,False,False,19.4 km from spill at closest approach
+371057000,MSC ELOISE,78.0,0.0718,23.445,0.0,False,False,23.4 km from spill at closest approach
+275510000,DELFIN,0.0,0.0716,20.954,0.0,False,False,21.0 km from spill at closest approach
+248738000,KAURI,0.0,0.0626,21.603,0.0,False,False,21.6 km from spill at closest approach
+305201000,KAROLIINA,0.0,0.0539,22.224,0.0,False,False,22.2 km from spill at closest approach
+248615000,KLARIKA,0.0,0.0512,22.412,0.0,False,False,22.4 km from spill at closest approach
+538007588,CLIPPER LIS,0.0,0.0507,22.449,0.0,False,False,22.4 km from spill at closest approach
+240565000,PROPONTIS,0.0,0.0485,22.608,0.0,False,False,22.6 km from spill at closest approach
+538005398,STI PIMLICO,0.0,0.0437,22.95,0.0,False,False,22.9 km from spill at closest approach
+311001059,NORWEGIAN PRIMA,0.0,0.0427,23.02,0.0,False,False,23.0 km from spill at closest approach
+209515000,CONTAINERSHIPS POLAR,0.0,0.0384,23.326,0.0,False,False,23.3 km from spill at closest approach
+230956000,KIISLA,0.0,0.0323,23.767,0.0,False,False,23.8 km from spill at closest approach
+257037140,EK-RIVER,0.0,0.0307,23.881,0.0,False,False,23.9 km from spill at closest approach
+230689000,UIKKU,0.0,0.0302,23.911,0.0,False,False,23.9 km from spill at closest approach
+230632000,FINNWAVE,0.0,0.0265,24.179,0.0,False,False,24.2 km from spill at closest approach
+230987000,FINNLADY,0.0,0.0226,24.458,0.0,False,False,24.5 km from spill at closest approach
