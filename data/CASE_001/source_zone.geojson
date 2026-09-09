@@ -1,16 +1,43 @@
 {
   "type": "Feature",
   "properties": {
+    "spill_id": "CASE_001",
     "case_id": "CASE_001",
+    "spill_latitude": 25.0,
+    "spill_longitude": -85.0,
+    "release_time_window": {
+      "start": null,
+      "end": null,
+      "status": "unavailable_from_current_case",
+      "reason": "The current-field dataset contains numerical time indices rather than absolute timestamps.",
+      "current_start_time_index": 2
+    },
+    "uncertainty": {
+      "position_uncertainty_deg": 0.01,
+      "windage_range": [
+        0.02,
+        0.04
+      ],
+      "num_particles": 100,
+      "probability_calibration": "not_calibrated",
+      "interpretation": "Relative ensemble uncertainty; not a calibrated probability."
+    },
     "num_particles": 100,
-    "threshold": 0.5,
+    "position_uncertainty_deg": 0.01,
     "windage_min": 0.02,
     "windage_max": 0.04,
-    "steps": 2,
-    "dt_seconds": 3600.0,
-    "start_time_index": 2,
     "random_seed": 42,
-    "description": "Relative high-density source zone from backward drift ensemble"
+    "backward_steps": 2,
+    "model_timestep_seconds": 3600.0,
+    "start_time_index": 2,
+    "grid_size": 20,
+    "threshold": 0.5,
+    "zone_type": "relative_high_density_source_zone",
+    "probability_calibration": "not_calibrated",
+    "description": "Relative high-density source zone derived from a backward drift ensemble. This zone represents possible source locations and is not an exact source point or a calibrated probability.",
+    "temporal_alignment": "representative_case_alignment",
+    "current_time_type": "dataset_index",
+    "note": "Current dataset contains numerical time indices rather than absolute timestamps. Wind forcing uses the downloaded ERA5 timestamps. An absolute release-time window is therefore not established for this representative case."
   },
   "geometry": {
     "type": "MultiPolygon",

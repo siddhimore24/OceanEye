@@ -1,0 +1,50 @@
+{
+    "case_id": "CASE_001",
+
+    "description": "Gulf of Mexico drift-model validation case",
+
+    "spill_observation": {
+        "latitude": 25.0,
+        "longitude": -85.0
+    },
+
+    "time": {
+        "model_timestep_seconds": 3600,
+        "current_time_type": "dataset_index",
+        "current_start_time_index": 2,
+
+        "wind_time_indices": [
+            0,
+            1,
+            2,
+            3
+        ],
+
+        "wind_timestamps": [
+            "2010-04-01T00:00:00",
+            "2010-04-01T06:00:00",
+            "2010-04-01T12:00:00",
+            "2010-04-01T18:00:00"
+        ],
+
+        "temporal_alignment": "representative_case_alignment"
+    },
+
+    "ensemble": {
+        "num_particles": 100,
+        "position_uncertainty_deg": 0.01,
+        "windage_min": 0.02,
+        "windage_max": 0.04,
+        "random_seed": 42
+    },
+
+    "backward_drift": {
+        "steps": 2
+    },
+
+    "source_zone": {
+        "grid_size": 20,
+        "threshold": 0.5,
+        "interpretation": "relative_high_density_source_zone"
+    }
+}

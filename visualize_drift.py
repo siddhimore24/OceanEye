@@ -72,8 +72,13 @@ def main():
 
     print("\nLoading metocean datasets...")
 
-    current_field = CurrentField(CURRENT_FILE)
-    wind_field = WindField(WIND_FILE)
+    current_field = CurrentField(
+        CURRENT_FILE
+    )
+
+    wind_field = WindField(
+        WIND_FILE
+    )
 
     print("Datasets loaded.")
 
@@ -81,7 +86,9 @@ def main():
     # Generate backward ensemble
     # --------------------------------------------------------
 
-    print("\nGenerating backward trajectories...")
+    print(
+        "\nGenerating backward trajectories..."
+    )
 
     source_positions = generate_backward_ensemble(
         start_latitude=SPILL_LATITUDE,
@@ -118,9 +125,13 @@ def main():
         tiles="OpenStreetMap",
     )
 
-    # --------------------------------------------------------
-    # Spill observation
-    # --------------------------------------------------------
+    # ========================================================
+    # OBSERVED SPILL
+    # ========================================================
+
+    spill_group = folium.FeatureGroup(
+        name="Observed Spill"
+    )
 
     folium.Marker(
         location=[
@@ -128,16 +139,23 @@ def main():
             SPILL_LONGITUDE,
         ],
         popup=(
-            "<b>Observed Spill Location</b><br>"
+            "<b>Observed Spill</b><br>"
             "Latitude: 25.00000<br>"
             "Longitude: -85.00000"
         ),
         tooltip="Observed Spill",
-    ).add_to(fmap)
+        icon=folium.Icon(
+            color="red",
+            icon="warning-sign",
+            prefix="glyphicon",
+        ),
+    ).add_to(spill_group)
 
-    # --------------------------------------------------------
-    # Backward particle layer
-    # --------------------------------------------------------
+    spill_group.add_to(fmap)
+
+    # ========================================================
+    # BACKWARD SOURCE PARTICLES
+    # ========================================================
 
     particle_group = folium.FeatureGroup(
         name="Backward Source Particles"
@@ -150,11 +168,14 @@ def main():
                 position["latitude"],
                 position["longitude"],
             ],
-            radius=4,
+            radius=3,
+            color="orange",
             fill=True,
-            fill_opacity=0.7,
+            fill_color="orange",
+            fill_opacity=0.65,
+            opacity=0.8,
             popup=(
-                f"<b>Particle "
+                f"<b>Backward Particle "
                 f"{position['particle_id']}</b><br>"
                 f"Latitude: "
                 f"{position['latitude']:.5f}<br>"
@@ -167,11 +188,13 @@ def main():
 
     particle_group.add_to(fmap)
 
-    # --------------------------------------------------------
-    # Source zone
-    # --------------------------------------------------------
+    # ========================================================
+    # RELATIVE SOURCE ZONE
+    # ========================================================
 
-    print("\nLoading source zone...")
+    print(
+        "\nLoading source zone..."
+    )
 
     with open(
         SOURCE_ZONE_FILE,
@@ -181,25 +204,38 @@ def main():
 
         source_zone = json.load(file)
 
+    source_zone_group = folium.FeatureGroup(
+        name="Relative Source Zone"
+    )
+
     folium.GeoJson(
         source_zone,
-        name="High-Density Source Zone",
         style_function=lambda feature: {
+            "color": "yellow",
+            "weight": 4,
+            "fillColor": "yellow",
             "fillOpacity": 0.35,
-            "weight": 3,
+            "dashArray": "8, 5",
         },
         highlight_function=lambda feature: {
-            "weight": 5,
-            "fillOpacity": 0.5,
+            "color": "yellow",
+            "weight": 6,
+            "fillOpacity": 0.50,
         },
-        tooltip="Relative High-Density Source Zone",
-    ).add_to(fmap)
+        tooltip=(
+            "Relative High-Density Source Zone"
+        ),
+    ).add_to(source_zone_group)
 
-    # --------------------------------------------------------
-    # Forward drift
-    # --------------------------------------------------------
+    source_zone_group.add_to(fmap)
 
-    print("\nGenerating forward drift trajectory...")
+    # ========================================================
+    # FORWARD DRIFT
+    # ========================================================
+
+    print(
+        "\nGenerating forward drift trajectory..."
+    )
 
     forward_trajectory = simulate_forward_drift(
         start_latitude=SPILL_LATITUDE,
@@ -222,37 +258,178 @@ def main():
             ]
         )
 
+    forward_group = folium.FeatureGroup(
+        name="Forward Drift"
+    )
+
     folium.PolyLine(
         locations=forward_coordinates,
+        color="blue",
         weight=5,
+        opacity=0.9,
         tooltip="Forward Drift Trajectory",
+    ).add_to(forward_group)
+
+    # Forward trajectory points
+
+    for index, position in enumerate(
+        forward_trajectory
+    ):
+
+        if index == 0:
+            continue
+
+        folium.CircleMarker(
+            location=[
+                position["latitude"],
+                position["longitude"],
+            ],
+            radius=5,
+            color="blue",
+            fill=True,
+            fill_color="blue",
+            fill_opacity=0.9,
+            popup=(
+                f"<b>Forward Step "
+                f"{position['step']}</b><br>"
+                f"Latitude: "
+                f"{position['latitude']:.5f}<br>"
+                f"Longitude: "
+                f"{position['longitude']:.5f}"
+            ),
+        ).add_to(forward_group)
+
+    forward_group.add_to(fmap)
+
+    # ========================================================
+    # LEGEND
+    # ========================================================
+
+    legend_html = """
+    <div style="
+        position: fixed;
+        bottom: 30px;
+        left: 30px;
+        width: 250px;
+        z-index: 9999;
+        background-color: white;
+        border: 2px solid #555;
+        border-radius: 7px;
+        padding: 13px;
+        font-size: 13px;
+        box-shadow: 2px 2px 7px rgba(0,0,0,0.3);
+    ">
+
+        <b style="font-size: 16px;">
+            SeaTrace — Drift Module
+        </b>
+
+        <hr style="margin: 8px 0;">
+
+        <div style="margin: 6px 0;">
+            <span style="
+                display:inline-block;
+                width:12px;
+                height:12px;
+                background:red;
+                border-radius:50%;
+                margin-right:7px;
+            "></span>
+            Observed Spill
+        </div>
+
+        <div style="margin: 6px 0;">
+            <span style="
+                display:inline-block;
+                width:12px;
+                height:12px;
+                background:orange;
+                border-radius:50%;
+                margin-right:7px;
+            "></span>
+            Backward Source Particles
+        </div>
+
+        <div style="margin: 6px 0;">
+            <span style="
+                display:inline-block;
+                width:12px;
+                height:12px;
+                background:yellow;
+                border:2px dashed #555;
+                margin-right:7px;
+            "></span>
+            Relative Source Zone
+        </div>
+
+        <div style="margin: 6px 0;">
+            <span style="
+                display:inline-block;
+                width:25px;
+                height:4px;
+                background:blue;
+                margin-right:7px;
+                vertical-align:middle;
+            "></span>
+            Forward Drift
+        </div>
+
+        <hr style="margin: 8px 0;">
+
+        <div style="font-size: 11px; line-height: 1.4;">
+            Source zone represents possible
+            source locations estimated from
+            backward particle advection.
+        </div>
+
+    </div>
+    """
+
+    fmap.get_root().html.add_child(
+        folium.Element(
+            legend_html
+        )
+    )
+
+    # ========================================================
+    # LAYER CONTROL
+    # ========================================================
+
+    folium.LayerControl(
+        collapsed=False
     ).add_to(fmap)
 
-    # --------------------------------------------------------
-    # Layer control
-    # --------------------------------------------------------
+    # ========================================================
+    # SAVE
+    # ========================================================
 
-    folium.LayerControl().add_to(fmap)
-
-    # --------------------------------------------------------
-    # Save
-    # --------------------------------------------------------
-
-    fmap.save(OUTPUT_MAP)
+    fmap.save(
+        OUTPUT_MAP
+    )
 
     current_field.close()
     wind_field.close()
 
-    print("\nMap saved successfully.")
+    print(
+        "\nMap saved successfully."
+    )
 
     print(
         "Output:",
         OUTPUT_MAP,
     )
 
-    print("\n" + "=" * 60)
-    print("DRIFT VISUALIZATION COMPLETE")
-    print("=" * 60)
+    print(
+        "\n" + "=" * 60
+    )
+
+    print(
+        "DRIFT VISUALIZATION COMPLETE"
+    )
+
+    print(
+        "=" * 60
+    )
 
 
 if __name__ == "__main__":

@@ -18,8 +18,35 @@ def simulate_forward_drift(
     """
     Simulate forward movement of one oil particle.
 
-    Returns:
-        List of dictionaries containing particle positions.
+    Parameters
+    ----------
+    start_latitude : float
+        Starting latitude.
+
+    start_longitude : float
+        Starting longitude.
+
+    current_field : CurrentField
+        Ocean-current dataset.
+
+    wind_field : WindField
+        Wind dataset.
+
+    time_indices : list
+        Explicit sequence of forcing indices.
+
+        IMPORTANT:
+        The current and wind datasets do not necessarily
+        share the same time coordinate. Therefore, callers
+        should provide an explicit mapping rather than
+        assuming index-to-index synchronization.
+
+    dt_seconds : float
+        Simulation timestep in seconds.
+
+    windage_factor : float
+        Fraction of wind velocity contributing to surface
+        oil movement.
     """
 
     latitude = float(start_latitude)
@@ -33,7 +60,14 @@ def simulate_forward_drift(
         }
     ]
 
-    for step, time_index in enumerate(time_indices, start=1):
+    for step, time_index in enumerate(
+        time_indices,
+        start=1,
+    ):
+
+        # ----------------------------------------------------
+        # Current forcing
+        # ----------------------------------------------------
 
         current_u, current_v = current_field.get_current(
             latitude=latitude,
@@ -41,11 +75,19 @@ def simulate_forward_drift(
             time_index=time_index,
         )
 
+        # ----------------------------------------------------
+        # Wind forcing
+        # ----------------------------------------------------
+
         wind_u, wind_v = wind_field.get_wind(
             latitude=latitude,
             longitude=longitude,
             time_index=time_index,
         )
+
+        # ----------------------------------------------------
+        # Combine current + windage
+        # ----------------------------------------------------
 
         effective_u, effective_v = combine_surface_velocity(
             current_u_ms=current_u,
@@ -54,6 +96,10 @@ def simulate_forward_drift(
             wind_v_ms=wind_v,
             windage_factor=windage_factor,
         )
+
+        # ----------------------------------------------------
+        # Move particle
+        # ----------------------------------------------------
 
         latitude, longitude = advance_particle(
             latitude=latitude,
@@ -73,6 +119,7 @@ def simulate_forward_drift(
 
     return trajectory
 
+
 def simulate_backward_drift(
     start_latitude,
     start_longitude,
@@ -84,15 +131,15 @@ def simulate_backward_drift(
     start_time_index=0,
 ):
     """
-    Estimate possible source locations by running the drift model backward.
+    Estimate possible source locations by running the drift
+    model backward.
 
-    The starting point represents the observed spill location.
-    Particles are moved backward through the current and wind fields.
+    The model reverses the advection component by using a
+    negative timestep.
 
-    Returns
-    -------
-    list of dict
-        Backward trajectory positions.
+    IMPORTANT:
+    This is a backward-advection estimate, not a reversal
+    of physical diffusion.
     """
 
     trajectory = []
@@ -108,12 +155,22 @@ def simulate_backward_drift(
         }
     )
 
-    for step in range(1, steps + 1):
+    for step in range(
+        1,
+        steps + 1,
+    ):
 
-        time_index = start_time_index - (step - 1)
+        time_index = (
+            start_time_index
+            - (step - 1)
+        )
 
         if time_index < 0:
             break
+
+        # ----------------------------------------------------
+        # Current forcing
+        # ----------------------------------------------------
 
         current_u, current_v = current_field.get_current(
             latitude=latitude,
@@ -121,11 +178,19 @@ def simulate_backward_drift(
             time_index=time_index,
         )
 
+        # ----------------------------------------------------
+        # Wind forcing
+        # ----------------------------------------------------
+
         wind_u, wind_v = wind_field.get_wind(
             latitude=latitude,
             longitude=longitude,
             time_index=time_index,
         )
+
+        # ----------------------------------------------------
+        # Combine current + windage
+        # ----------------------------------------------------
 
         effective_u, effective_v = combine_surface_velocity(
             current_u_ms=current_u,
@@ -134,6 +199,10 @@ def simulate_backward_drift(
             wind_v_ms=wind_v,
             windage_factor=windage_factor,
         )
+
+        # ----------------------------------------------------
+        # Move backward
+        # ----------------------------------------------------
 
         latitude, longitude = advance_particle(
             latitude=latitude,
@@ -153,6 +222,7 @@ def simulate_backward_drift(
 
     return trajectory
 
+
 def generate_backward_ensemble(
     start_latitude,
     start_longitude,
@@ -170,20 +240,48 @@ def generate_backward_ensemble(
     """
     Generate multiple backward drift trajectories.
 
-    Small variations in starting position and windage represent
-    uncertainty in the observed spill and environmental forcing.
+    Each particle receives:
 
-    Returns
-    -------
-    list of dict
-        Final estimated source positions for all particles.
+    - a slightly perturbed starting position
+    - a randomly sampled windage factor
+
+    The final backward positions are returned as possible
+    source locations.
     """
 
-    rng = np.random.default_rng(random_seed)
+    if num_particles <= 0:
+        raise ValueError(
+            "num_particles must be greater than zero."
+        )
+
+    if position_uncertainty_deg < 0:
+        raise ValueError(
+            "position_uncertainty_deg must be non-negative."
+        )
+
+    if windage_min < 0 or windage_max < 0:
+        raise ValueError(
+            "Windage values must be non-negative."
+        )
+
+    if windage_min > windage_max:
+        raise ValueError(
+            "windage_min cannot be greater than windage_max."
+        )
+
+    rng = np.random.default_rng(
+        random_seed
+    )
 
     source_positions = []
 
-    for particle_id in range(num_particles):
+    for particle_id in range(
+        num_particles
+    ):
+
+        # ----------------------------------------------------
+        # Initial position uncertainty
+        # ----------------------------------------------------
 
         particle_latitude = (
             start_latitude
@@ -201,10 +299,18 @@ def generate_backward_ensemble(
             )
         )
 
+        # ----------------------------------------------------
+        # Windage uncertainty
+        # ----------------------------------------------------
+
         particle_windage = rng.uniform(
             windage_min,
             windage_max,
         )
+
+        # ----------------------------------------------------
+        # Backward trajectory
+        # ----------------------------------------------------
 
         trajectory = simulate_backward_drift(
             start_latitude=particle_latitude,
@@ -217,14 +323,24 @@ def generate_backward_ensemble(
             start_time_index=start_time_index,
         )
 
+        # ----------------------------------------------------
+        # Final possible source position
+        # ----------------------------------------------------
+
         final_position = trajectory[-1]
 
         source_positions.append(
             {
                 "particle_id": particle_id,
-                "latitude": final_position["latitude"],
-                "longitude": final_position["longitude"],
-                "windage_factor": particle_windage,
+
+                "latitude":
+                    final_position["latitude"],
+
+                "longitude":
+                    final_position["longitude"],
+
+                "windage_factor":
+                    particle_windage,
             }
         )
 
