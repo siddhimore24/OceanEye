@@ -201,7 +201,7 @@ export const SpillDetectionPage: React.FC<SpillDetectionPageProps> = ({
                         {/* Width caliper */}
                         <line x1="390" y1="160" x2="330" y2="310" />
                         <text x="375" y="250" fill="#7dd3fc" fontSize="10" fontWeight="600" className="font-mono">
-                          2.3 km
+                          {incident.characteristics.widthKm} km
                         </text>
                       </g>
                     )}
@@ -222,7 +222,7 @@ export const SpillDetectionPage: React.FC<SpillDetectionPageProps> = ({
                   {incident.satellite.instrument} • {incident.satellite.polarization}
                 </text>
                 <text x="14" y="402" fill="#38bdf8" fontSize="10" className="font-mono">
-                  CENTROID: {incident.coordinates.lat.toFixed(4)}°N, {Math.abs(incident.coordinates.lng).toFixed(4)}°W
+                  CENTROID: {Math.abs(incident.coordinates.lat).toFixed(4)}°{incident.coordinates.lat >= 0 ? 'N' : 'S'}, {Math.abs(incident.coordinates.lng).toFixed(4)}°{incident.coordinates.lng >= 0 ? 'E' : 'W'}
                 </text>
               </svg>
 

@@ -52,7 +52,7 @@ export const DriftPredictionPage: React.FC<DriftPredictionPageProps> = ({
       ? `Projected advection: slick center moving ESE at ${drift.driftSpeedKnots} knots under wind & current coupling.` 
       : timelineOffset < 0
       ? `Reverse Lagrangian backcast approaching suspected vessel release corridor.`
-      : `Baseline SAR detection footprint (18.42 km²).`
+      : `Baseline SAR detection footprint (${incident.characteristics.areaSqKm} km²).`
   };
 
   return (

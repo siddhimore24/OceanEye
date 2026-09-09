@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { 
   ZoomIn, ZoomOut, RotateCcw, Layers, Eye, Compass, 
   Crosshair, Ship, Waves, AlertTriangle, Wind, Info,
-  Radio, Droplets, ExternalLink, X, Activity, Thermometer
+  Radio, Droplets, ExternalLink, X, Activity, Thermometer, MapPin
 } from 'lucide-react';
 import { SpillIncident, MapLayerConfig, VesselAttribution } from '../types';
 import { 
@@ -11,6 +11,7 @@ import {
   INCOIS_BUOY_STATIONS, 
   IncoisBuoyStation 
 } from '../services/incoisService';
+import { GoogleOceanMap } from './GoogleOceanMap';
 
 interface OceanMapProps {
   incident: SpillIncident;
@@ -35,7 +36,8 @@ export const OceanMap: React.FC<OceanMapProps> = ({
 }) => {
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 55 }); // Upper view alignment
-  const [mapType, setMapType] = useState<'incois' | 'map' | 'satellite'>('incois'); // Default to INCOIS LSF
+  const [mapType, setMapType] = useState<'google' | 'incois' | 'map' | 'satellite'>('google'); // Default to Google Maps
+
   const [incoisForecast, setIncoisForecast] = useState<IncoisLsfForecast | null>(null);
   const [selectedBuoy, setSelectedBuoy] = useState<IncoisBuoyStation | null>(null);
   const [showIncoisDrawer, setShowIncoisDrawer] = useState(false);
@@ -158,6 +160,46 @@ export const OceanMap: React.FC<OceanMapProps> = ({
   };
 
   const activePos = getTimelinePosition();
+
+  // If Google Maps mode is active, render the dedicated Google Maps geospatial layer
+  if (mapType === 'google') {
+    return (
+      <div className={`relative ${className}`} style={{ minHeight: '460px' }}>
+        <GoogleOceanMap
+          incident={incident}
+          selectedVessel={selectedVessel}
+          onSelectVessel={onSelectVessel}
+          timelineOffsetHours={timelineOffsetHours}
+          highlightOrigin={highlightOrigin}
+          className={className}
+          showControls={showControls}
+          onSwitchToSvgFallback={() => setMapType('incois')}
+        />
+        
+        {/* Top Floating View Switcher on top of Google Maps */}
+        <div className="absolute top-3 left-3 z-30 pointer-events-auto">
+          <div className="flex items-center bg-slate-900/95 backdrop-blur-md rounded-lg shadow-xl border border-slate-700 p-0.5 text-xs font-semibold font-poppins text-slate-300">
+            <button
+              id="google-maps-live-mode-btn"
+              onClick={() => setMapType('google')}
+              className="px-3 py-1 rounded-md bg-blue-600 text-white font-bold shadow-xs flex items-center gap-1.5"
+            >
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span>Google Maps (Live)</span>
+            </button>
+            <button
+              id="incois-lsf-mode-btn"
+              onClick={() => setMapType('incois')}
+              className="px-3 py-1 rounded-md text-slate-300 hover:text-white flex items-center gap-1.5 transition-colors"
+            >
+              <Waves className="w-3.5 h-3.5 text-sky-400" />
+              <span>INCOIS LSF Chart</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div 
@@ -976,8 +1018,16 @@ export const OceanMap: React.FC<OceanMapProps> = ({
       {/* Floating Map Header / Telemetry Bar & INCOIS / Google Maps Mode Switcher */}
       <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none gap-2 z-20">
         <div className="flex items-center gap-2 pointer-events-auto flex-wrap">
-          {/* Mode Switcher: INCOIS LSF | Map (2D) | Satellite */}
+          {/* Mode Switcher: Google Maps (Live) | INCOIS LSF | Map (2D) | Satellite */}
           <div className="flex items-center bg-white/95 backdrop-blur-md rounded-lg shadow-md border border-slate-200 p-0.5 text-xs font-semibold font-poppins">
+            <button
+              id="google-maps-live-mode-btn"
+              onClick={() => setMapType('google')}
+              className="px-3 py-1 rounded-md transition-colors flex items-center gap-1.5 bg-blue-50 text-blue-700 hover:bg-blue-100 font-bold"
+            >
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span>Google Maps (Live)</span>
+            </button>
             <button
               id="incois-lsf-mode-btn"
               onClick={() => setMapType('incois')}
@@ -987,7 +1037,7 @@ export const OceanMap: React.FC<OceanMapProps> = ({
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              <span className={`w-2 h-2 rounded-full ${mapType === 'incois' ? 'bg-emerald-300 animate-pulse' : 'bg-blue-500'}`} />
+              <Waves className="w-3.5 h-3.5" />
               <span>INCOIS LSF</span>
             </button>
             <button
@@ -1000,20 +1050,10 @@ export const OceanMap: React.FC<OceanMapProps> = ({
               }`}
             >
               <span className="w-2 h-2 rounded-full bg-sky-500" />
-              <span>Map (2D)</span>
-            </button>
-            <button
-              id="google-maps-mode-satellite-btn"
-              onClick={() => setMapType('satellite')}
-              className={`px-3 py-1 rounded-md transition-colors flex items-center gap-1.5 ${
-                mapType === 'satellite'
-                  ? 'bg-slate-900 text-white font-bold shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <span>Satellite</span>
+              <span>Vector (2D)</span>
             </button>
           </div>
+
 
           {/* INCOIS LSF Bulletin Action Button */}
           <button
@@ -1260,11 +1300,12 @@ export const OceanMap: React.FC<OceanMapProps> = ({
       </div>
 
       {/* Selected/Hovered Vessel Preview Card (Bottom-Right) */}
-      {(hoveredVessel || selectedVessel) && (
-        <div className="absolute bottom-3 right-3 bg-white/95 backdrop-blur-md p-3 rounded-lg border border-slate-200 shadow-xl max-w-sm z-20 text-xs font-poppins">
-          {(() => {
-            const v = hoveredVessel || selectedVessel!;
-            return (
+      {(() => {
+        const validSelected = selectedVessel && incident.vessels.some(v => v.mmsi === selectedVessel.mmsi) ? selectedVessel : null;
+        const v = hoveredVessel || validSelected;
+        if (!v) return null;
+        return (
+          <div className="absolute bottom-3 right-3 bg-white/95 backdrop-blur-md p-3 rounded-lg border border-slate-200 shadow-xl max-w-sm z-20 text-xs font-poppins">
               <div>
                 <div className="flex items-center justify-between border-b border-slate-100 pb-1.5 mb-2 font-poppins">
                   <div className="flex items-center gap-1.5">
@@ -1301,10 +1342,9 @@ export const OceanMap: React.FC<OceanMapProps> = ({
                   </div>
                 )}
               </div>
-            );
-          })()}
-        </div>
-      )}
+            </div>
+          );
+        })()}
 
       {/* Selected Buoy Telemetry Popover (Bottom-Center/Right) */}
       {selectedBuoy && (

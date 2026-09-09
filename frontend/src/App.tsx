@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { PageId, SpillIncident, VesselAttribution } from './types';
 import { AppProvider, useApp } from './context/AppContext';
 import { Navigation } from './components/Navigation';
 import { NewSpillModal } from './components/NewSpillModal';
+import { SpillSelectorBar } from './components/SpillSelectorBar';
 
 // Pages
 import { OverviewPage } from './pages/OverviewPage';
@@ -30,16 +31,27 @@ function AppInner() {
 
   const [selectedVessel, setSelectedVessel] = useState<VesselAttribution | null>(null);
   const [isNewSpillModalOpen, setIsNewSpillModalOpen] = useState<boolean>(false);
+  const [newSpillSessionId, setNewSpillSessionId] = useState<number>(1);
+
+  // Automatically reset selected vessel when incident changes so new spill suspect is highlighted
+  useEffect(() => {
+    setSelectedVessel(null);
+  }, [activeIncident.id]);
 
   const handleSelectIncident = (incident: SpillIncident) => {
     setActiveIncident(incident);
     setSelectedVessel(null);
   };
 
+  const handleOpenNewSpillModal = () => {
+    setNewSpillSessionId(prev => prev + 1);
+    setIsNewSpillModalOpen(true);
+  };
+
   const handleSpillAnalyzed = (newIncident: SpillIncident) => {
     addIncident(newIncident);
     setSelectedVessel(null);
-    navigateTo('detection');
+    navigateTo('attribution');
   };
 
   return (
@@ -51,11 +63,21 @@ function AppInner() {
         activeIncident={activeIncident}
         incidents={incidents}
         onSelectIncident={handleSelectIncident}
-        onOpenNewSpillModal={() => setIsNewSpillModalOpen(true)}
+        onOpenNewSpillModal={handleOpenNewSpillModal}
       />
 
+      {/* Persistent Incident Context & Quick Spill Switcher Bar (displayed across all intelligence pages) */}
+      {!['auth', 'login', 'admin'].includes(currentPage) && (
+        <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 pt-4">
+          <SpillSelectorBar
+            onOpenNewSpillModal={handleOpenNewSpillModal}
+            onSelectVessel={setSelectedVessel}
+          />
+        </div>
+      )}
+
       {/* Main Content Area with Page Transitions */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 pt-6 font-poppins">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 pt-4 font-poppins">
         <AnimatePresence mode="wait">
           <motion.div
             key={`${currentPage}-${activeIncident.id}`}
@@ -69,7 +91,7 @@ function AppInner() {
                 incident={activeIncident}
                 incidents={incidents}
                 onNavigate={navigateTo}
-                onOpenNewSpillModal={() => setIsNewSpillModalOpen(true)}
+                onOpenNewSpillModal={handleOpenNewSpillModal}
                 onSelectVessel={setSelectedVessel}
               />
             )}
@@ -195,6 +217,7 @@ function AppInner() {
 
       {/* New Spill Analysis Wizard Modal */}
       <NewSpillModal
+        key={newSpillSessionId}
         isOpen={isNewSpillModalOpen}
         onClose={() => setIsNewSpillModalOpen(false)}
         onSpillAnalyzed={handleSpillAnalyzed}

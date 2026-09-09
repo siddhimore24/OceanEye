@@ -22,7 +22,9 @@ export const VesselAttributionPage: React.FC<VesselAttributionPageProps> = ({
 }) => {
   const { isAdmin, classifiedIntel } = useApp();
   const vessels = incident?.vessels || [];
-  const activeVessel = selectedVessel || vessels[0];
+  const activeVessel = (selectedVessel && vessels.some(v => v.mmsi === selectedVessel.mmsi))
+    ? selectedVessel
+    : vessels[0];
 
   const classifiedForVessel = useMemo(() => {
     if (!activeVessel || !classifiedIntel) return [];

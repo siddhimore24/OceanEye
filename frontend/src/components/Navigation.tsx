@@ -150,6 +150,20 @@ export const Navigation: React.FC<NavigationProps> = ({
                     </div>
                   </button>
                 ))}
+
+                <div className="p-2 border-t border-slate-800 bg-slate-950/60">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsIncidentDropdownOpen(false);
+                      onOpenNewSpillModal();
+                    }}
+                    className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs transition-colors shadow-sm"
+                  >
+                    <PlusCircle className="w-3.5 h-3.5" />
+                    <span>+ Analyze New Spill Scene</span>
+                  </button>
+                </div>
               </div>
             )}
           </div>

@@ -130,3 +130,49 @@ entirely rather than just down-weighting them.
   of stage 1 on the provided data
 - `vessel_ranking_example.csv`, `vessel_ranking_with_driftzone_example.csv`,
   `example_drift_zone.geojson` — stage 2 demo outputs
+
+---
+
+## 3. OceanEye Frontend & Google Maps Geospatial Visualization
+
+OceanEye provides an interactive maritime intelligence dashboard featuring live satellite SAR oil spill detection, hydrodynamic drift source zone modeling, and AIS candidate vessel ranking.
+
+### Google Maps Platform Setup
+
+To use Google Maps as the interactive map visualization:
+
+1. **Google Cloud Project**:
+   - Create or select a Google Cloud project in the [Google Cloud Console](https://console.cloud.google.com/).
+2. **Enable APIs**:
+   - Enable the **Maps JavaScript API** for your project.
+3. **API Key Generation & Restrictions**:
+   - Generate an API Key under **APIs & Services > Credentials**.
+   - (Recommended) Restrict the key to HTTP referrers (e.g., `http://localhost:3000/*` and your production domain) and restrict API usage specifically to *Maps JavaScript API*.
+4. **Configure Environment Variable**:
+   - Copy `frontend/.env.example` to `frontend/.env`:
+     ```bash
+     cp frontend/.env.example frontend/.env
+     ```
+   - Set the environment variable:
+     ```env
+     VITE_GOOGLE_MAPS_API_KEY=YOUR_GOOGLE_MAPS_API_KEY
+     VITE_GOOGLE_MAPS_MAP_ID=DEMO_MAP_ID
+     ```
+   *(Never commit real API keys or `.env` files to git).*
+
+### Running the Application
+
+1. **Frontend Development Server**:
+   ```bash
+   cd frontend
+   npm install
+   npm run dev
+   ```
+   Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+2. **Backend / API (Optional / Python Pipeline)**:
+   ```bash
+   python clean_ais.py --input data/sample_ais.csv --outdir out/
+   python spill_attribution.py --positions out/ais_cleaned_positions.csv --lat 18.9749 --lon 72.0250 --time 2026-09-07T06:11:14 --radius-km 25 --out out/vessel_ranking.csv
+   ```
+

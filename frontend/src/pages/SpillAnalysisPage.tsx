@@ -72,7 +72,7 @@ export const SpillAnalysisPage: React.FC<SpillAnalysisPageProps> = ({
           <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Estimated Volume & Oil Type</div>
           <div className="flex items-baseline gap-2 mt-2">
             <span className="text-3xl font-extrabold text-blue-600 font-mono">{c.estimatedVolumeM3}</span>
-            <span className="text-xs text-slate-500 font-semibold font-mono">m³ (~2,590 bbl)</span>
+            <span className="text-xs text-slate-500 font-semibold font-mono">m³ (~{Math.round(c.estimatedVolumeM3 * 6.2898).toLocaleString()} bbl)</span>
           </div>
           <div className="mt-2 text-xs text-slate-600 border-t border-slate-100 pt-2 font-semibold truncate">
             {c.slickType}

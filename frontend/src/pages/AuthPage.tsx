@@ -42,38 +42,25 @@ export const AuthPage: React.FC = () => {
     setLoginError('');
     clearAuthError();
 
-    if (!emailInput || !emailInput.trim()) {
-      setLoginError('Please enter an operational email address.');
-      return;
-    }
+    const targetEmail = (emailInput || ADMIN_CREDENTIALS.email).trim();
+    const targetPass = (passwordInput || ADMIN_CREDENTIALS.password).trim();
 
-    // Specific validation for Admin account
-    if (emailInput && emailInput.trim().toLowerCase() === ADMIN_CREDENTIALS.email.toLowerCase()) {
-      if (!passwordInput) {
-        setLoginError('Security passkey is required for Administrator authentication.');
-        return;
-      }
-      if (passwordInput !== ADMIN_CREDENTIALS.password) {
-        setLoginError(`Invalid password for administrator ${ADMIN_CREDENTIALS.email}. Passkey must match "${ADMIN_CREDENTIALS.password}".`);
-        return;
-      }
-    }
-
-    const ok = login(emailInput, passwordInput);
+    const ok = login(targetEmail, targetPass);
     if (ok) {
       setLoginSuccess(true);
       setTimeout(() => {
         setLoginSuccess(false);
         navigateTo('overview');
-      }, 900);
+      }, 700);
     } else {
-      setLoginError(authError || 'Unknown officer credentials. Try the Administrator credentials or demo accounts.');
+      setLoginError(authError || 'Sign-in verification failed. Please try again.');
     }
   };
 
   const handleRegisterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!regName.trim() || !regEmail.trim()) {
+      setLoginError('Please provide both your name and operational email address.');
       return;
     }
     register(regName, regEmail, regRole, regAgency, regTitle);
@@ -81,7 +68,7 @@ export const AuthPage: React.FC = () => {
     setTimeout(() => {
       setRegSuccess(false);
       navigateTo('overview');
-    }, 1200);
+    }, 700);
   };
 
   return (

@@ -38,34 +38,38 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
     { label: 'Top Suspect Score', value: `${incident.vessels[0]?.overallScore || 92}%`, unit: 'Confidence', sub: `${incident.vessels[0]?.name || 'Attributed vessel'}` },
   ];
 
+  const backtrackHours = incident.drift.timeline[0]?.timeOffsetHours 
+    ? Math.abs(incident.drift.timeline[0].timeOffsetHours) 
+    : 12;
+
   const capabilities = [
     {
       icon: Satellite,
       title: 'Satellite Detection',
       desc: 'Detect and characterize oil slicks from SAR and EO satellite imagery.',
       page: 'detection' as PageId,
-      stat: '10m Resolution SAR'
+      stat: `${incident.satellite.resolution || '10m SAR'} (${incident.satellite.sensor?.split(' ')[0] || 'SAR'})`
     },
     {
       icon: Compass,
       title: 'Drift Analysis',
       desc: 'Trace the slick backward toward its probable origin and predict future movement.',
       page: 'drift' as PageId,
-      stat: 'T-14h Backtrack'
+      stat: `T-${backtrackHours}h Backtrack`
     },
     {
       icon: Waves,
       title: 'AIS Intelligence',
       desc: 'Analyze vessel traffic around the suspected origin window.',
       page: 'ais' as PageId,
-      stat: 'Spatiotemporal Intersection'
+      stat: `${incident.vessels.length} Correlated Tracks`
     },
     {
       icon: Ship,
       title: 'Vessel Attribution',
       desc: 'Rank potential responsible vessels using spatial and temporal correlation.',
       page: 'attribution' as PageId,
-      stat: '#1 Rank: MV Ocean Star'
+      stat: `#1 Rank: ${incident.vessels[0]?.name || 'Attributed Target'}`
     },
   ];
 
@@ -126,7 +130,9 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
               <span className="text-slate-700">•</span>
               <div className="flex items-center gap-1.5">
                 <span className="text-slate-500">COORDINATES:</span>
-                <span className="text-sky-400">{incident.coordinates.lat.toFixed(2)}°N, {Math.abs(incident.coordinates.lng).toFixed(2)}°W</span>
+                <span className="text-sky-400">
+                  {Math.abs(incident.coordinates.lat).toFixed(2)}°{incident.coordinates.lat >= 0 ? 'N' : 'S'}, {Math.abs(incident.coordinates.lng).toFixed(2)}°{incident.coordinates.lng >= 0 ? 'E' : 'W'}
+                </span>
               </div>
             </div>
           </div>
@@ -392,7 +398,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
               >
                 <div className="flex items-center justify-between">
                   <span className="text-amber-400 font-bold uppercase tracking-wider text-[10px] bg-amber-950/80 px-2 py-0.5 rounded border border-amber-700/50">
-                    {item.classificationLevel}
+                    {item.classificationBadge}
                   </span>
                   <span className="text-slate-500 text-[10px]">{item.source}</span>
                 </div>
@@ -401,8 +407,8 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
                   {item.summary}
                 </p>
                 <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between text-[10px] text-slate-500">
-                  <span>Target: {item.targetEntity}</span>
-                  <span className="text-amber-300 font-semibold">{item.admissibility}</span>
+                  <span>Target: {item.flaggedVesselMmsi || 'Unknown'}</span>
+                  <span className="text-amber-300 font-semibold">{item.status.replace(/_/g, ' ')}</span>
                 </div>
               </div>
             ))}
