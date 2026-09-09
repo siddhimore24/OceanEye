@@ -27,22 +27,30 @@ export const AisIntelligencePage: React.FC<AisIntelligencePageProps> = ({
 
   // Filtered vessel list
   const filteredVessels = useMemo(() => {
-    return incident.vessels.filter(v => {
-      if (searchMmsi && !v.name.toLowerCase().includes(searchMmsi.toLowerCase()) && !v.mmsi.includes(searchMmsi)) {
-        return false;
+    const vessels = incident?.vessels || [];
+    const query = (searchMmsi || '').trim().toLowerCase();
+
+    return vessels.filter(v => {
+      if (!v) return false;
+      if (query) {
+        const nameMatch = v.name ? v.name.toLowerCase().includes(query) : false;
+        const mmsiMatch = v.mmsi ? String(v.mmsi).includes(query) : false;
+        if (!nameMatch && !mmsiMatch) {
+          return false;
+        }
       }
       if (selectedType !== 'ALL' && v.type !== selectedType) {
         return false;
       }
-      if (v.evidence.distanceAtOriginNM > maxDistanceNM) {
+      if (v.evidence && v.evidence.distanceAtOriginNM > maxDistanceNM) {
         return false;
       }
-      if (onlyAnomalies && v.evidence.behaviorAnomalies.length === 0) {
+      if (onlyAnomalies && (!v.evidence?.behaviorAnomalies || v.evidence.behaviorAnomalies.length === 0)) {
         return false;
       }
       return true;
     });
-  }, [incident.vessels, searchMmsi, selectedType, maxDistanceNM, onlyAnomalies]);
+  }, [incident?.vessels, searchMmsi, selectedType, maxDistanceNM, onlyAnomalies]);
 
   return (
     <div className="space-y-6 pb-12">

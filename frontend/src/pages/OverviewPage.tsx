@@ -1,11 +1,13 @@
 import React from 'react';
 import { 
   Satellite, Compass, Waves, Ship, ArrowRight, 
-  ShieldAlert, Radio, Activity, CheckCircle, Clock, Database, ChevronRight
+  ShieldAlert, ShieldCheck, Radio, Activity, CheckCircle, Clock, Database, ChevronRight,
+  Lock, KeyRound, Edit3, PlusCircle, AlertTriangle, EyeOff
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { SpillIncident, PageId, VesselAttribution } from '../types';
 import { OceanMap } from '../components/OceanMap';
+import { useApp } from '../context/AppContext';
 
 interface OverviewPageProps {
   incident: SpillIncident;
@@ -22,12 +24,18 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
   onOpenNewSpillModal,
   onSelectVessel,
 }) => {
+  const { currentUser, isAdmin, classifiedIntel, loginAsRole } = useApp();
+
+  const relevantIntel = classifiedIntel.filter(
+    item => item.incidentId === incident.id || item.incidentId === 'inc-0884'
+  );
+
   const kpis = [
-    { label: 'Active Spill Events', value: '3', unit: 'Sectors', sub: '2 offshore, 1 strait' },
-    { label: 'High-Risk Incidents', value: '1', unit: 'Critical', sub: `${incident.characteristics.areaSqKm} km² crude discharge`, alert: true },
-    { label: 'AIS Vessels Correlated', value: '142', unit: 'Tracks', sub: 'Within 25 NM radius window' },
-    { label: 'SAR Detection Confidence', value: '96.8%', unit: 'Radar', sub: 'Sentinel-1C IW C-SAR' },
-    { label: 'Mean Attribution Score', value: '88.5%', unit: 'Confidence', sub: 'Top suspect correlated at 92%' },
+    { label: 'Active Spill Events', value: `${incidents.length}`, unit: 'Sectors', sub: 'Indexed in database' },
+    { label: 'Monitored Incident', value: incident.severity, unit: 'Severity', sub: `${incident.characteristics.areaSqKm} km² ${incident.characteristics.slickType}`, alert: incident.severity === 'HIGH' },
+    { label: 'AIS Vessels Correlated', value: `${incident.vessels.length * 35}`, unit: 'Tracks', sub: 'Within 25 NM radius window' },
+    { label: 'SAR Detection Confidence', value: `${incident.characteristics.confidenceScore}%`, unit: 'Radar', sub: `${incident.satellite.satellite}` },
+    { label: 'Top Suspect Score', value: `${incident.vessels[0]?.overallScore || 92}%`, unit: 'Confidence', sub: `${incident.vessels[0]?.name || 'Attributed vessel'}` },
   ];
 
   const capabilities = [
@@ -125,7 +133,7 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
 
           {/* Hero Visual Preview */}
           <div className="lg:col-span-5 relative">
-            <div className="rounded-xl overflow-hidden border border-slate-700 shadow-2xl bg-slate-950 relative">
+            <div className="rounded-xl overflow-hidden border border-slate-200 shadow-xl bg-white relative font-poppins">
               <div className="h-64 sm:h-72 w-full">
                 <OceanMap
                   incident={incident}
@@ -134,14 +142,14 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
                   className="w-full h-full rounded-xl"
                 />
               </div>
-              <div className="p-3 bg-slate-900/90 border-t border-slate-800 flex items-center justify-between text-xs">
-                <span className="font-mono text-slate-300 flex items-center gap-1.5">
+              <div className="p-3 bg-white border-t border-slate-200 flex items-center justify-between text-xs font-poppins">
+                <span className="font-poppins text-slate-700 flex items-center gap-1.5 font-medium">
                   <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
                   SLICK: {incident.characteristics.areaSqKm} km² ({incident.characteristics.slickType})
                 </span>
                 <button 
                   onClick={() => onNavigate('drift')}
-                  className="text-sky-400 hover:text-sky-300 font-semibold flex items-center gap-1"
+                  className="text-sky-600 hover:text-sky-700 font-semibold flex items-center gap-1 font-poppins"
                 >
                   <span>Interactive Map</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -255,6 +263,43 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
         </div>
       </section>
 
+      {/* ADMIN OPERATIONAL STATUS BAR */}
+      {isAdmin ? (
+        <div className="p-3.5 rounded-xl bg-amber-950/40 border border-amber-500/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5 text-xs text-amber-300">
+            <ShieldAlert className="w-4 h-4 text-amber-400 shrink-0" />
+            <span>
+              <strong>Administrator Access Granted (Level 5)</strong>: You can modify incident data, recalibrate vessel scores, and inspect classified defense intercepts.
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => onNavigate('admin')}
+              className="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs flex items-center gap-1.5 shadow-sm transition-all"
+            >
+              <Edit3 className="w-3.5 h-3.5" />
+              <span>Open Admin Data Console</span>
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="p-3.5 rounded-xl bg-slate-900 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5 text-xs text-slate-400">
+            <Lock className="w-4 h-4 text-sky-400 shrink-0" />
+            <span>
+              Signed in as <strong>{currentUser.name}</strong> ({currentUser.role.toUpperCase()} • Level {currentUser.clearanceLevel}). Classified naval intelligence and data modification are partitioned.
+            </span>
+          </div>
+          <button
+            onClick={() => onNavigate('auth')}
+            className="text-xs font-mono text-sky-400 hover:text-sky-300 flex items-center gap-1 font-semibold self-start sm:self-auto"
+          >
+            <span>Switch to Admin Account</span>
+            <ArrowRight className="w-3 h-3" />
+          </button>
+        </div>
+      )}
+
       {/* 4. KEY SYSTEM CAPABILITIES */}
       <section>
         <div className="mb-4">
@@ -293,6 +338,103 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
             );
           })}
         </div>
+      </section>
+
+      {/* CLASSIFIED DEFENSE & LAW ENFORCEMENT INTELLIGENCE FEED */}
+      <section className="bg-slate-900 border border-slate-800 rounded-2xl p-5 text-slate-200 shadow-md">
+        <div className="flex flex-wrap items-center justify-between gap-2 mb-4 pb-3 border-b border-slate-800">
+          <div className="flex items-center gap-2.5">
+            <div className={`p-1.5 rounded-lg ${isAdmin ? 'bg-amber-500/20 text-amber-400' : 'bg-slate-800 text-slate-400'}`}>
+              {isAdmin ? <ShieldAlert className="w-5 h-5" /> : <Lock className="w-5 h-5" />}
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="text-sm font-bold text-white font-mono tracking-wide">
+                  CLASSIFIED DEFENSE & LAW ENFORCEMENT FEEDS
+                </h3>
+                <span className={`px-2 py-0.5 rounded text-[10px] font-bold font-mono ${
+                  isAdmin ? 'bg-amber-950 border border-amber-600 text-amber-300' : 'bg-slate-800 text-slate-400'
+                }`}>
+                  {isAdmin ? 'LEVEL 5 TOP SECRET // UNRESTRICTED' : 'PARTITIONED - ADMIN CLEARANCE REQUIRED'}
+                </span>
+              </div>
+              <p className="text-xs text-slate-400">
+                Signals Intelligence (SIGINT), covert naval radar, and Interpol shadow fleet interception records
+              </p>
+            </div>
+          </div>
+
+          {isAdmin ? (
+            <button
+              onClick={() => onNavigate('admin')}
+              className="px-3 py-1 rounded-lg bg-amber-500/20 border border-amber-500/40 hover:bg-amber-500/30 text-amber-300 text-xs font-mono font-bold transition-all flex items-center gap-1.5"
+            >
+              <span>Manage Feeds in Admin Console</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          ) : (
+            <button
+              onClick={() => onNavigate('auth')}
+              className="px-3 py-1 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold transition-all flex items-center gap-1.5"
+            >
+              <KeyRound className="w-3.5 h-3.5" />
+              <span>Authenticate as Admin</span>
+            </button>
+          )}
+        </div>
+
+        {isAdmin ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            {relevantIntel.map((item) => (
+              <div
+                key={item.id}
+                className="p-3.5 rounded-xl bg-slate-950/80 border border-amber-500/30 text-xs font-mono space-y-2 relative overflow-hidden"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-amber-400 font-bold uppercase tracking-wider text-[10px] bg-amber-950/80 px-2 py-0.5 rounded border border-amber-700/50">
+                    {item.classificationLevel}
+                  </span>
+                  <span className="text-slate-500 text-[10px]">{item.source}</span>
+                </div>
+                <h4 className="text-slate-200 font-bold text-xs">{item.title}</h4>
+                <p className="text-slate-400 text-[11px] leading-relaxed line-clamp-3">
+                  {item.summary}
+                </p>
+                <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between text-[10px] text-slate-500">
+                  <span>Target: {item.targetEntity}</span>
+                  <span className="text-amber-300 font-semibold">{item.admissibility}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="p-6 rounded-xl bg-slate-950/60 border border-slate-800 text-center space-y-3">
+            <div className="w-12 h-12 rounded-full bg-slate-800/80 border border-slate-700 flex items-center justify-center mx-auto text-slate-400">
+              <Lock className="w-6 h-6 text-sky-400" />
+            </div>
+            <div>
+              <h4 className="text-sm font-bold text-slate-200 font-mono">Restricted Intelligence Partition</h4>
+              <p className="text-xs text-slate-400 max-w-lg mx-auto mt-1 leading-relaxed">
+                3 active classified defense records (including Naval SIGINT intercepts, Interpol Dark Fleet Purple Notices, and Admiralty Court impoundment affidavits) are hidden under Public / Analyst clearance.
+              </p>
+            </div>
+            <div className="pt-2 flex items-center justify-center gap-3">
+              <button
+                onClick={() => loginAsRole('admin')}
+                className="px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs font-mono shadow-sm transition-all flex items-center gap-2"
+              >
+                <ShieldAlert className="w-4 h-4" />
+                <span>Instant Admin Switch (Demo)</span>
+              </button>
+              <button
+                onClick={() => onNavigate('auth')}
+                className="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition-colors"
+              >
+                Go to Authentication Terminal
+              </button>
+            </div>
+          </div>
+        )}
       </section>
 
       {/* 5. RECENT SURVEILLANCE LOGS & CORROBORATION FEED */}

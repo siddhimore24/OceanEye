@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
   Ship, ShieldAlert, AlertTriangle, CheckCircle2, 
-  Clock, Compass, ArrowRight, FileText, ChevronRight, BarChart3, Activity, Info
+  Clock, Compass, ArrowRight, FileText, ChevronRight, BarChart3, Activity, Info,
+  Sliders, ShieldCheck, Lock
 } from 'lucide-react';
 import { SpillIncident, PageId, VesselAttribution } from '../types';
+import { useApp } from '../context/AppContext';
 
 interface VesselAttributionPageProps {
   incident: SpillIncident;
@@ -18,8 +20,29 @@ export const VesselAttributionPage: React.FC<VesselAttributionPageProps> = ({
   onSelectVessel,
   onNavigate,
 }) => {
-  const vessels = incident.vessels;
+  const { isAdmin, classifiedIntel } = useApp();
+  const vessels = incident?.vessels || [];
   const activeVessel = selectedVessel || vessels[0];
+
+  const classifiedForVessel = useMemo(() => {
+    if (!activeVessel || !classifiedIntel) return [];
+    const vesselName = (activeVessel.name || '').toLowerCase();
+    const vesselMmsi = String(activeVessel.mmsi || '');
+
+    return classifiedIntel.filter(item => {
+      if (!item) return false;
+      const flaggedMmsi = String(item.flaggedVesselMmsi || '');
+      const summary = (item.summary || '').toLowerCase();
+      const details = (item.details || '').toLowerCase();
+      const title = (item.title || '').toLowerCase();
+
+      return (
+        (flaggedMmsi && flaggedMmsi === vesselMmsi) ||
+        (vesselName && (summary.includes(vesselName) || details.includes(vesselName) || title.includes(vesselName))) ||
+        (vesselMmsi && (summary.includes(vesselMmsi) || details.includes(vesselMmsi)))
+      );
+    });
+  }, [activeVessel, classifiedIntel]);
 
   return (
     <div className="space-y-6 pb-12">
@@ -293,8 +316,24 @@ export const VesselAttributionPage: React.FC<VesselAttributionPageProps> = ({
               </div>
             </div>
 
+            {/* Classified Defense Intercepts for this vessel (Admin Only) */}
+            {isAdmin && classifiedForVessel.length > 0 && (
+              <div className="p-3 rounded-xl bg-amber-950/40 border border-amber-500/40 space-y-2 text-xs font-mono">
+                <div className="flex items-center gap-1.5 text-amber-400 font-bold">
+                  <ShieldAlert className="w-3.5 h-3.5" />
+                  <span>CLASSIFIED LAW ENFORCEMENT FLAG ATTACHED</span>
+                </div>
+                {classifiedForVessel.map(item => (
+                  <div key={item.id} className="text-slate-300 text-[11px] bg-slate-900/90 p-2 rounded border border-amber-500/20">
+                    <span className="text-amber-300 font-bold block">{item.title}</span>
+                    <span className="text-slate-400">{item.summary}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+
             {/* Action buttons */}
-            <div className="pt-2">
+            <div className="pt-2 space-y-2">
               <button
                 onClick={() => onNavigate('reports')}
                 className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs transition-colors shadow-sm"
@@ -302,6 +341,21 @@ export const VesselAttributionPage: React.FC<VesselAttributionPageProps> = ({
                 <FileText className="w-3.5 h-3.5" />
                 <span>Export Vessel Dossier to Investigation Report</span>
               </button>
+
+              {isAdmin ? (
+                <button
+                  onClick={() => onNavigate('admin')}
+                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition-colors shadow-sm font-mono"
+                >
+                  <Sliders className="w-3.5 h-3.5" />
+                  <span>Admin Recalibrate Scores & Weighting</span>
+                </button>
+              ) : (
+                <div className="p-2 rounded-lg bg-slate-100 border border-slate-200 text-center text-[11px] text-slate-500 font-mono flex items-center justify-center gap-1.5">
+                  <Lock className="w-3 h-3 text-slate-400" />
+                  <span>Attribution weighting override restricted to Level 5 Admin</span>
+                </div>
+              )}
             </div>
           </div>
         </div>

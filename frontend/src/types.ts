@@ -131,6 +131,45 @@ export interface SpillIncident {
   };
 }
 
+export type UserRole = 'admin' | 'analyst' | 'public';
+
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+  role: UserRole;
+  clearanceLevel: number; // 5: Admin, 3: Analyst, 1: Public
+  agency: string;
+  title: string;
+  lastLogin?: string;
+  badgeNumber?: string;
+}
+
+export interface ClassifiedIntelItem {
+  id: string;
+  incidentId: string;
+  title: string;
+  classificationBadge: 'TOP SECRET // NOFORN' | 'RESTRICTED // LAW ENFORCEMENT' | 'CONFIDENTIAL // MARPOL';
+  timestamp: string;
+  summary: string;
+  details: string;
+  source: string;
+  actionRequired?: string;
+  flaggedVesselMmsi?: string;
+  status: 'ACTIVE_INVESTIGATION' | 'WARRANT_ISSUED' | 'MONITORING_ESCORT';
+}
+
+export interface AuditLogEntry {
+  id: string;
+  timestamp: string;
+  userId: string;
+  userName: string;
+  userRole: UserRole;
+  action: string;
+  details: string;
+  targetId?: string;
+}
+
 export type PageId = 
   | 'overview' 
   | 'detection' 
@@ -138,7 +177,10 @@ export type PageId =
   | 'drift' 
   | 'ais' 
   | 'attribution' 
-  | 'reports';
+  | 'reports'
+  | 'auth'
+  | 'login'
+  | 'admin';
 
 export interface MapLayerConfig {
   satellite: boolean;
